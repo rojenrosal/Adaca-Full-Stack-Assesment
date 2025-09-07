@@ -81,3 +81,12 @@ App runs at 👉 http://localhost:3000
 
 
 ## Screen Shots
+**Default View**
+<img width="1440" height="779" alt="page" src="https://github.com/user-attachments/assets/c431cd3a-22a4-4b64-b570-1154be9f94ef" />
+**Form View**
+<img width="1440" height="771" alt="form" src="https://github.com/user-attachments/assets/686df85e-a447-4bb9-899e-57e94a0cf2a3" />
+**Added View**
+<img width="1440" height="778" alt="added" src="https://github.com/user-attachments/assets/05987f32-464e-41b9-876b-fbfea946bd25" />
+
+
+
