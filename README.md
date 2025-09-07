@@ -111,63 +111,90 @@ Link: https://drive.google.com/file/d/1H0QhRyGEHkG-ZDuC9fAXSgKYgQpCGnlf/view?usp
 
 ## Architectural Overview
 
-- **Clients (Web/Mobile):**  Users access the platform through React and React Native apps. These clients handle both UI interactions and real-time media connections.
-- **Content Delivery Network:**  Responsible for cachinG static assets.
-- **Edge /WAF + Load Balancer:**  Responsible for routing requests efficiently, terminating TLS connections, providing WAF protection, mitigating DDoS attacks, This layer ensures that both REST and WebSocket traffic are distributed properly.  
-- **API Gateway & Microservices:**  This is the heart of the platform. Microservices handle discrete responsibilities such as authentication, user/profile management, patient records, appointments, notifications, and billing. The API Gateway provides a unified entry point while enforcing authentication, rate limiting, and request validation.  
-- **Data Layer:**  Structured data is stored in relational databases(one for each service), large files and recordings in object storage, and Redis is used for caching sessions, presence, and frequently accessed data. This separation ensures both performance and data reliability.  
-- **Media Layer:**  SFU nodes handle low-latency audio/video streams, while TURN servers relay media when direct peer-to-peer connections are not possible. Clients connect directly to SFU/TURN for optimal performance.  
-- **Messaging/Event Bus:**  Facilitates asynchronous communication between microservices for notifications, billing, and analytics, helping decouple services and maintain responsiveness under high load.  
-- **Security & Operations:**  Centralized IAM, KMS, logging, monitoring, and SIEM ensure that security, observability, and auditing are consistently enforced across all components.
+- **Clients (Web/Mobile)**  - Users access the platform through React and React Native apps. These clients handle both UI interactions and real-time media connections.
+  
+- **Content Delivery Network** - Responsible for caching static assets.
+  
+- **Edge /WAF + Load Balancer** -  Responsible for routing requests efficiently, terminating TLS connections, providing WAF protection, mitigating DDoS attacks, This layer ensures that both REST and WebSocket traffic are distributed properly.
+  
+- **API Gateway & Microservices** - This is the heart of the platform. Microservices handle discrete responsibilities such as authentication, user/profile management, patient records, appointments, notifications, and billing. The API Gateway provides a unified entry point while enforcing authentication, rate limiting, and request validation.
+    
+- **Data Layer** - Structured data is stored in relational databases(one for each service), large files and recordings in object storage, and Redis is used for caching sessions, presence, and frequently accessed data. This separation ensures both performance and data reliability.
+  
+- **Media Layer** - SFU nodes handle low-latency audio/video streams, while TURN servers relay media when direct peer-to-peer connections are not possible. Clients connect directly to SFU/TURN for optimal performance.
+  
+- **Messaging/Event Bus** - Facilitates asynchronous communication between microservices for notifications, billing, and analytics, helping decouple services and maintain responsiveness under high load.
+- 
+- **Security & Operations** - Centralized IAM, KMS, logging, monitoring, and SIEM ensure that security, observability, and auditing are consistently enforced across all components.
 
 ---
 
 ## Key Technologies
 
-- **Web & Mobile Clients:**  React / React Native  
-- **Microservices:**  Node.js / Go / Java, containerized for easy scaling and deployment  
-- **Database / Storage:**  PostgreSQL/MySQL, S3/GCP/Azure object storage, Redis cache  
-- **Media:**  SFU cluster, TURN servers, WebRTC for real-time communications  
-- **Messaging/Event Bus:**  Kafka / NATS / RabbitMQ for async event-driven workflows  
-- **Edge / Load Balancer / CDN:**  TLS termination, WAF, DDoS protection, caching for optimized traffic flow  
-- **Security / Monitoring:**  IAM, KMS, SIEM, centralized logging, and metrics for observability
+- **Web & Mobile Clients** - React / React Native
+  
+- **Microservices** - Node.js / Go / Java, containerized for easy scaling and deployment
+  
+- **Database / Storage** - PostgreSQL/MySQL, S3/GCP/Azure object storage, Redis cache
+  
+- **Media** -  SFU cluster, TURN servers, WebRTC for real-time communications
+  
+- **Messaging/Event Bus**  - Kafka / NATS / RabbitMQ for async event-driven workflows
+  
+- **Edge / Load Balancer / CDN**  - TLS termination, WAF, DDoS protection, caching for optimized traffic flow
+  
+- **Security / Monitoring**  - IAM, KMS, SIEM, centralized logging, and metrics for observability
 
 ---
 
 ##  Scalability & Security Considerations
 
-- **Horizontal scaling:**  Stateless microservices and distributed SFU/TURN nodes allow the system to handle a large number of concurrent users.  
-- **Caching & read replicas:**  Reduce latency and database load for frequently accessed patient data and profiles.  
-- **Event-driven architecture:**  Decouples services, ensuring that notifications, analytics, and background processing do not block core workflows.  
-- **TLS / DTLS encryption:**  All API and WebRTC traffic is encrypted to protect data in transit.  
-- **RBAC/ABAC, MFA, short-lived tokens:**  Strong authentication and fine-grained authorization ensure that only authorized users can access sensitive data.  
-- **Logging, monitoring, and SIEM:**  Provides operational visibility, anomaly detection, and audit trails for compliance and incident response.
+- **Horizontal scaling** -  Stateless microservices and distributed SFU/TURN nodes allow the system to handle a large number of concurrent users.
+  
+- **Caching & read replicas** -  Reduce latency and database load for frequently accessed patient data and profiles.
+  
+- **Event-driven architecture** - Decouples services, ensuring that notifications, analytics, and background processing do not block core workflows.
+  
+- **TLS / DTLS encryption** - All API and WebRTC traffic is encrypted to protect data in transit.
+  
+- **RBAC/ABAC, MFA, short-lived tokens**  - Strong authentication and fine-grained authorization ensure that only authorized users can access sensitive data.
+    
+- **Logging, monitoring, and SIEM:**  - Provides operational visibility, anomaly detection, and audit trails for compliance and incident response.
 
 ---
 
 ## Microservices Approach
 
-- Each service is **independent and stateless**, focused on a single responsibility.  
-- Services **own their data**, which can reside in relational DBs, object storage, or caches.  
-- Communication is via **REST APIs, WebSockets, or asynchronous events** through the messaging bus.  
+- Each service is **independent and stateless**, focused on a single responsibility.
+  
+- Services **own their data**, which can reside in relational DBs, object storage, or caches.
+  
+- Communication is via **REST APIs, WebSockets, or asynchronous events** through the messaging bus.
+  
 - This architecture improves **scalability, maintainability, fault isolation**, and allows services to be deployed independently.
 
 ---
 
 ##  Design Trade-offs
 
-- **SFU vs MCU:** SFU provides scalable, low-cost media handling, while MCU simplifies client logic at higher server resource cost.  
-- **Multi-region vs single-region:** Multi-region deployment improves latency and resilience but adds operational complexity and cost.  
-- **Serverless vs provisioned DB:** Serverless databases can handle sudden spikes efficiently; provisioned databases provide predictable performance for consistent workloads.  
-- **End-to-End Encryption (E2EE):** Enhances privacy but disables server-side features such as recording or analytics.
+- **SFU vs MCU**  - SFU provides scalable, low-cost media handling, while MCU simplifies client logic at higher server resource cost.
+  
+- **Multi-region vs single-region**  - Multi-region deployment improves latency and resilience but adds operational complexity and cost.
+  
+- **Serverless vs provisioned DB** - Serverless databases can handle sudden spikes efficiently; provisioned databases provide predictable performance for consistent workloads.
+  
+- **End-to-End Encryption (E2EE)**  - Enhances privacy but disables server-side features such as recording or analytics.
 
 ---
 
 ##  Scenario Mapping
 
-- **Video consultations:** Managed through WebRTC and SFU/TURN servers for real-time audio/video.  
-- **Patient record management:** Records microservice interacts with databases and object storage.  
-- **Secure authentication:** Handled by Auth microservice with RBAC/ABAC and MFA for user security.  
+- **Video consultations:** Managed through WebRTC and SFU/TURN servers for real-time audio/video.
+    
+- **Patient record management:** Records microservice interacts with databases and object storage.
+  
+- **Secure authentication:** Handled by Auth microservice with RBAC/ABAC and MFA for user security.
+  
 - **High concurrency:** Achieved through horizontal scaling of microservices, caching strategies, event-driven workflows, and a distributed media plane.
 
 
@@ -198,6 +225,5 @@ I decided on a **stateless FastAPI service** with caching and a relational datab
 This also ensured long-term maintainability because we could update rules without affecting other parts of the system.
 
 
-I
 
 
