@@ -1,4 +1,4 @@
-# I.Coding Challenge
+# I. Coding Challenge
 
 
 # Task: Patient Management Dashboard Prototype
@@ -87,6 +87,21 @@ App runs at 👉 http://localhost:3000
 <img width="1440" height="771" alt="form" src="https://github.com/user-attachments/assets/686df85e-a447-4bb9-899e-57e94a0cf2a3" />
 **Added View**
 <img width="1440" height="778" alt="added" src="https://github.com/user-attachments/assets/05987f32-464e-41b9-876b-fbfea946bd25" />
+
+
+# II. System Design
+
+
+# Scenario: Design a high-level architecture for a telehealth platform that supports:
+  * Video consultations
+  * Patient record management
+  * Secure authentication
+  * Scalability for 100,000+ concurrent users
+
+
+**Architectural Diagram
+<img width="959" height="634" alt="Screenshot 2025-09-08 at 3 58 11 AM" src="https://github.com/user-attachments/assets/15685424-0302-45f9-9cde-ea29cb094d40" />
+Link: https://drive.google.com/file/d/1H0QhRyGEHkG-ZDuC9fAXSgKYgQpCGnlf/view?usp=sharing
 
 
 
