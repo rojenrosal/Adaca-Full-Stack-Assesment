@@ -170,6 +170,71 @@ Link: https://drive.google.com/file/d/1H0QhRyGEHkG-ZDuC9fAXSgKYgQpCGnlf/view?usp
 - **Secure authentication:** Handled by Auth microservice with RBAC/ABAC and MFA for user security.  
 - **High concurrency:** Achieved through horizontal scaling of microservices, caching strategies, event-driven workflows, and a distributed media plane.
 
+
+
+-----
+
+## **1. Architectural Overview**
+
+  - **\<span style="color:\#007bff"\>Clients (Web/Mobile):\</span\>** Users access the platform through React and React Native apps. These clients handle both UI interactions and real-time media connections.
+  - **\<span style="color:\#ffc107"\>Content Delivery Network:\</span\>** Responsible for caching static assets.
+  - **\<span style="color:\#fd7e14"\>Edge /WAF + Load Balancer:\</span\>** Responsible for routing requests efficiently, terminating TLS connections, providing WAF protection, mitigating DDoS attacks. This layer ensures that both REST and WebSocket traffic are distributed properly.
+  - **\<span style="color:\#6f42c1"\>API Gateway & Microservices:\</span\>** The heart of the platform. Microservices handle discrete responsibilities such as authentication, user/profile management, patient records, appointments, notifications, and billing. The API Gateway provides a unified entry point while enforcing authentication, rate limiting, and request validation.
+  - **\<span style="color:\#20c997"\>Data Layer:\</span\>** Structured data is stored in relational databases (one for each service), large files and recordings in object storage, and Redis is used for caching sessions, presence, and frequently accessed data. This separation ensures both performance and data reliability.
+  - **\<span style="color:\#d63384"\>Media Layer:\</span\>** SFU nodes handle low-latency audio/video streams, while TURN servers relay media when direct peer-to-peer connections are not possible. Clients connect directly to SFU/TURN for optimal performance.
+  - **\<span style="color:\#17a2b8"\>Messaging/Event Bus:\</span\>** Facilitates asynchronous communication between microservices for notifications, billing, and analytics, helping decouple services and maintain responsiveness under high load.
+  - **\<span style="color:\#6c757d"\>Security & Operations:\</span\>** Centralized IAM, KMS, logging, monitoring, and SIEM ensure that security, observability, and auditing are consistently enforced across all components.
+
+-----
+
+## **2. Key Technologies**
+
+  - **\<span style="color:\#007bff"\>Web & Mobile Clients:\</span\>** React / React Native
+  - **\<span style="color:\#6f42c1"\>Microservices:\</span\>** Node.js / Go / Java, containerized for easy scaling and deployment
+  - **\<span style="color:\#20c997"\>Database / Storage:\</span\>** PostgreSQL/MySQL, S3/GCP/Azure object storage, Redis cache
+  - **\<span style="color:\#d63384"\>Media:\</span\>** SFU cluster, TURN servers, WebRTC for real-time communications
+  - **\<span style="color:\#17a2b8"\>Messaging/Event Bus:\</span\>** Kafka / NATS / RabbitMQ for async event-driven workflows
+  - **\<span style="color:\#fd7e14"\>Edge / Load Balancer / CDN:\</span\>** TLS termination, WAF, DDoS protection, caching for optimized traffic flow
+  - **\<span style="color:\#6c757d"\>Security / Monitoring:\</span\>** IAM, KMS, SIEM, centralized logging, and metrics for observability
+
+-----
+
+## **3. Scalability & Security Considerations**
+
+  - **\<span style="color:\#007bff"\>Horizontal scaling:\</span\>** Stateless microservices and distributed SFU/TURN nodes allow the system to handle a large number of concurrent users.
+  - **\<span style="color:\#ffc107"\>Caching & read replicas:\</span\>** Reduce latency and database load for frequently accessed patient data and profiles.
+  - **\<span style="color:\#17a2b8"\>Event-driven architecture:\</span\>** Decouples services, ensuring that notifications, analytics, and background processing do not block core workflows.
+  - **\<span style="color:\#dc3545"\>TLS / DTLS encryption:\</span\>** All API and WebRTC traffic is encrypted to protect data in transit.
+  - **\<span style="color:\#dc3545"\>RBAC/ABAC, MFA, short-lived tokens:\</span\>** Strong authentication and fine-grained authorization ensure that only authorized users can access sensitive data.
+  - **\<span style="color:\#6c757d"\>Logging, monitoring, and SIEM:\</span\>** Provides operational visibility, anomaly detection, and audit trails for compliance and incident response.
+
+-----
+
+## **4. Microservices Approach**
+
+  - Each service is **\<span style="color:\#007bff"\>independent and stateless\</span\>**, focused on a single responsibility.
+  - Services **\<span style="color:\#6f42c1"\>own their data\</span\>**, which can reside in relational DBs, object storage, or caches.
+  - Communication is via **\<span style="color:\#17a2b8"\>REST APIs, WebSockets, or asynchronous events\</span\>** through the messaging bus.
+  - This architecture improves **\<span style="color:\#28a745"\>scalability, maintainability, fault isolation\</span\>**, and allows services to be deployed independently.
+
+-----
+
+## **5. Design Trade-offs**
+
+  - **\<span style="color:\#d63384"\>SFU vs MCU:\</span\>** SFU provides scalable, low-cost media handling, while MCU simplifies client logic at higher server resource cost.
+  - **\<span style="color:\#ffc107"\>Multi-region vs single-region:\</span\>** Multi-region deployment improves latency and resilience but adds operational complexity and cost.
+  - **\<span style="color:\#20c997"\>Serverless vs provisioned DB:\</span\>** Serverless databases can handle sudden spikes efficiently; provisioned databases provide predictable performance for consistent workloads.
+  - **\<span style="color:\#dc3545"\>End-to-End Encryption (E2EE):\</span\>** Enhances privacy but disables server-side features such as recording or analytics.
+
+-----
+
+## **6. Scenario Mapping**
+
+  - **\<span style="color:\#d63384"\>Video consultations:\</span\>** Managed through WebRTC and SFU/TURN servers for real-time audio/video.
+  - **\<span style="color:\#6f42c1"\>Patient record management:\</span\>** Records microservice interacts with databases and object storage.
+  - **\<span style="color:\#6c757d"\>Secure authentication:\</span\>** Handled by Auth microservice with RBAC/ABAC and MFA for user security.
+  - **\<span style="color:\#28a745"\>High concurrency:\</span\>** Achieved through horizontal scaling of microservices, caching strategies, event-driven workflows, and a distributed media plane.
+
 ---
 
 # III. Technical Leadership Question (5 minutes)
